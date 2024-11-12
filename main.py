@@ -74,7 +74,7 @@ def generate_random_car() -> CarData:
         maximum_range=random.uniform(250, 450),
         charging_connector_types=["Type 2", "CCS"],
         charging_cable_types=["Mode 3", "Mode 4"],
-        gps_coordinates={"latitude": 41.1579, "longitude": -8.6291},  # Fixed to Porto
+        gps_coordinates={"latitude": 41.15339338931094, "longitude": -8.605600452111506},  # Fixed to Porto
         state_of_charge=random.uniform(0, 100),
         speed=random.uniform(0, 120),
         instant_power_consumption=random.uniform(10, 30),
@@ -95,7 +95,6 @@ def generate_random_car() -> CarData:
             "rear_right": random.uniform(2.2, 2.4)
         }
     )
-
 @app.post("/users/create")
 async def create_user() -> UserData:
     """Create a new user with fixed code 'aaaaaa' and Porto coordinates"""
