@@ -57,13 +57,22 @@ def generate_user_code() -> str:
 
 def generate_random_car() -> CarData:
     """Generate random car data with GPS coordinates fixed to Porto"""
-    brands = ["Tesla", "BMW", "Audi", "Mercedes", "Porsche", "Volvo"]
-    models = ["Model 3", "i4", "e-tron", "EQS", "Taycan", "C40"]
+    car_options = {
+        "Tesla": ["Model 3", "Model S", "Model X", "Model Y"],
+        "BMW": ["i4", "iX", "330e", "530e"],
+        "Audi": ["e-tron", "Q4 e-tron", "RS e-tron GT"],
+        "Mercedes": ["EQS", "EQE", "EQA", "EQB"],
+        "Porsche": ["Taycan", "Taycan Cross Turismo"],
+        "Volvo": ["C40", "XC40 Recharge"]
+    }
+    
+    brand = random.choice(list(car_options.keys()))
+    model = random.choice(car_options[brand])
     colors = ["Black", "White", "Blue", "Red", "Silver", "Green"]
     
     return CarData(
-        brand=random.choice(brands),
-        model=random.choice(models),
+        brand=brand,
+        model=model,
         year=random.randint(2020, 2024),
         vin=str(uuid.uuid4().hex)[:17].upper(),
         license_plate=f"{random.choice(string.ascii_uppercase)}{random.randint(100, 999)}",
@@ -95,6 +104,25 @@ def generate_random_car() -> CarData:
             "rear_right": random.uniform(2.2, 2.4)
         }
     )
+
+def prepopulate_user():
+    """Add an initial user to the database"""
+    user_data = UserData(
+        code=generate_user_code(),
+        name="John Doe",
+        age=30,
+        language="English",
+        nationality="US",
+        phone_number="+11234567890",
+        car=generate_random_car()
+    )
+    users_db[user_data.code] = user_data
+
+@app.on_event("startup")
+def startup_event():
+    """Prepopulate user when the server starts"""
+    prepopulate_user()
+
 @app.post("/users/create")
 async def create_user() -> UserData:
     """Create a new user with fixed code 'aaaaaa' and Porto coordinates"""
